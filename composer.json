@@ -7,8 +7,8 @@
         "lumen"
     ],
     "require": {
-        "guzzlehttp/guzzle": "^6.3",
-        "illuminate/http": "^5.5",
+        "guzzlehttp/guzzle": "^6.2",
+        "illuminate/http": "^5.2",
         "kamermans/guzzle-oauth2-subscriber": "^1.0",
         "guzzlehttp/oauth-subscriber": "^0.3.0"
     },
