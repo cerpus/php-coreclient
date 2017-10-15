@@ -9,7 +9,7 @@ use GuzzleHttp\ClientInterface;
 class Client implements CoreClientContract
 {
 
-    public function getClient($config): ClientInterface
+    public static function getClient($config): ClientInterface
     {
         return new \GuzzleHttp\Client([
             'base_uri' => config('services.contentAuthor.url'),

@@ -13,7 +13,7 @@ use kamermans\OAuth2\OAuth2Middleware;
 
 class Oauth2Client implements CoreClientContract
 {
-    public function getClient($config): ClientInterface
+    public static function getClient($config): ClientInterface
     {
         $reauth_client = new Client([
             'base_uri' => config('auth.cerpus_auth.server') . "/oauth/token",

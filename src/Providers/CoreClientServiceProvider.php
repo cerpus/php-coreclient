@@ -18,22 +18,13 @@ class CoreClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(CoreClientContract::class, function ($app){
-            $auth = $app['config']->get("auth");
-            $adapter = $app['config']->get("adapter");
-            $clientClass = $adapter['client'];
-            return new $clientClass();
-        });
-
         $this->app->bind(CoreContract::class, function ($app){
-
-            $adapter = $app['config']->get("adapter");
-            //return new $class($app['config']['groups']);
+            $coreclient = $app['config']->get("coreclient");
+            $client = $coreclient['adapter']['client']::getClient($coreclient);
+            return new $coreclient['adapter']['current']($client);
         });
 
-        $this->app->alias(CoreContract::class, 'coreclient');
-
-        $this->mergeConfigFrom(__DIR__ . "/config/coreclient.php",  "coreclient");
+        $this->mergeConfigFrom(__DIR__ . "/../Config/coreclient.php", "coreclient");
     }
 
     /**
@@ -43,7 +34,7 @@ class CoreClientServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [CoreContract::class, CoreClientContract::class];
+        return [CoreContract::class];
     }
 
 }

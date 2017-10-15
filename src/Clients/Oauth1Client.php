@@ -12,7 +12,7 @@ use GuzzleHttp\Client;
 class Oauth1Client implements CoreClientContract
 {
 
-    public function getClient($config): ClientInterface
+    public static function getClient($config): ClientInterface
     {
         $stack = HandlerStack::create();
 
