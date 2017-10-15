@@ -3,6 +3,7 @@
 namespace Cerpus\CoreClient\Providers;
 
 
+use Cerpus\CoreClient\Contracts\CoreClientContract;
 use Cerpus\CoreClient\Contracts\CoreContract;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +18,13 @@ class CoreClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind(CoreClientContract::class, function ($app){
+            $auth = $app['config']->get("auth");
+            $adapter = $app['config']->get("adapter");
+            $clientClass = $adapter['client'];
+            return new $clientClass();
+        });
+
         $this->app->bind(CoreContract::class, function ($app){
 
             $adapter = $app['config']->get("adapter");
@@ -35,7 +43,7 @@ class CoreClientServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [CoreContract::class];
+        return [CoreContract::class, CoreClientContract::class];
     }
 
 }

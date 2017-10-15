@@ -2,15 +2,13 @@
 
 namespace Cerpus\CoreClient;
 
+use Cerpus\CoreClient\Contracts\CoreContract;
+use Illuminate\Support\Facades\Facade;
 
-use Illuminate\Contracts\Config\Repository;
-
-class CoreClient
+class CoreClient extends Facade
 {
-    private $config;
-
-    public function __construct(Repository $config)
+    protected static function getFacadeAccessor()
     {
-        $this->config = $config;
+        return CoreContract::class;
     }
 }

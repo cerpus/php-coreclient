@@ -18,7 +18,7 @@ return [
 
     "adapter" => [
         'current' => env("CORE_CLIENT_ADAPTER", \Cerpus\CoreClient\Adapters\CoreAdapter::class),
-        'service' => env("CORE_CLIENT_SERVICE"),
+        'client' => env("CORE_CLIENT_SERVICE"),
     ]
     /*
      * Default class for groups
