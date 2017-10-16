@@ -27,9 +27,7 @@ class CoreAdapter implements CoreContract
     {
         try {
             $response = $this->client->request('POST', '/url/to/core', [
-                'json' => [
-                    $this->prepareQuestionset($questionset)
-                ]
+                'json' => $this->prepareQuestionset($questionset)
             ]);
 
             if ($response->getStatusCode() !== Response::HTTP_OK) {
