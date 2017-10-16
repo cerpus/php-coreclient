@@ -29,4 +29,14 @@ abstract class Question
             $that->addAnswer($answer);
         });
     }
+
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
 }

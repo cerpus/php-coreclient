@@ -3,6 +3,8 @@
 namespace Cerpus\CoreClient\Adapters;
 
 use Cerpus\CoreClient\Contracts\CoreContract;
+use Cerpus\CoreClient\DataObjects\Answer;
+use Cerpus\CoreClient\DataObjects\Question;
 use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
 use GuzzleHttp\ClientInterface;
@@ -26,7 +28,7 @@ class CoreAdapter implements CoreContract
         try {
             $response = $this->client->request('POST', '/url/to/core', [
                 'json' => [
-                    $questionset
+                    $this->prepareQuestionset($questionset)
                 ]
             ]);
 
@@ -55,5 +57,35 @@ class CoreAdapter implements CoreContract
     public function getError()
     {
         return $this->error;
+    }
+
+    private function prepareQuestionset(Questionset $questionset)
+    {
+        $questions = $questionset->getQuestions()
+            ->map(function ($question) {
+                /** @var Question $question */
+                $answers = $question->getAnswers()
+                    ->map(function ($answer) {
+                        /** @var Answer $answer */
+                        return [
+                            'text' => $answer->text,
+                            'correct' => $answer->correct,
+                        ];
+                    })
+                    ->toArray();
+                return [
+                    'text' => $question->text,
+                    'type' => $question->getType(),
+                    'answers' => $answers
+                ];
+            })
+            ->toArray();
+        return [
+            'license' => $questionset->license,
+            'authId' => $questionset->authId,
+            'title' => $questionset->title,
+            'sharing' => $questionset->getSharing(),
+            'questions' => $questions
+        ];
     }
 }

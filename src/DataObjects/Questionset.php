@@ -27,4 +27,14 @@ class Questionset
     {
         $this->sharing = $sharing;
     }
+
+    public function getQuestions()
+    {
+        return $this->questions;
+    }
+
+    public function getSharing()
+    {
+        return $this->sharing;
+    }
 }
