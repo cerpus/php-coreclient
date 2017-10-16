@@ -36,7 +36,7 @@ class CoreClientServiceProvider extends ServiceProvider
             return new $coreclient['adapter']['current']($client);
         });
 
-        $this->mergeConfigFrom(CoreClient::getConfigPath(), "coreclient");
+        $this->mergeConfigFrom(CoreClient::getConfigPath(), CoreClient::$alias);
     }
 
     /**

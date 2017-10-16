@@ -8,6 +8,8 @@ use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
 
 interface CoreContract
 {
-    public function createQuestionSet(Questionset $questionset): QuestionsetResponse;
+    public function createQuestionSet(Questionset $questionset);
+
+    public function getError();
 
 }

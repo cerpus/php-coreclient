@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Facade;
 
 class CoreClient extends Facade
 {
+    static $alias = "coreclient";
+
     protected static function getFacadeAccessor()
     {
         return CoreContract::class;
