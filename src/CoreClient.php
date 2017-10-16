@@ -11,4 +11,9 @@ class CoreClient extends Facade
     {
         return CoreContract::class;
     }
+
+    public static function getBasePath()
+    {
+        return dirname(__DIR__);
+    }
 }

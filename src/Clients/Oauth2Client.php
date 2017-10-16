@@ -4,6 +4,7 @@ namespace Cerpus\CoreClient\Clients;
 
 
 use Cerpus\CoreClient\Contracts\CoreClientContract;
+use Cerpus\CoreClient\DataObjects\OauthSetup;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\HandlerStack;
@@ -13,14 +14,14 @@ use kamermans\OAuth2\OAuth2Middleware;
 
 class Oauth2Client implements CoreClientContract
 {
-    public static function getClient($config): ClientInterface
+    public static function getClient(OauthSetup $config): ClientInterface
     {
         $reauth_client = new Client([
-            'base_uri' => config('auth.cerpus_auth.server') . "/oauth/token",
+            'base_uri' => $config->authUrl . "/oauth/token",
         ]);
         $reauth_config = [
-            "client_id" => config('auth.cerpus_auth.user'),
-            "client_secret" => config('auth.cerpus_auth.secret'),
+            "client_id" => $config->key,
+            "client_secret" => $config->secret,
         ];
         $grant_type = new ClientCredentials($reauth_client, $reauth_config);
         $oauth = new OAuth2Middleware($grant_type);
@@ -29,7 +30,7 @@ class Oauth2Client implements CoreClientContract
         $stack->push($oauth);
 
         $client = new Client([
-            'base_uri' => config('services.contentAuthor.url'),
+            'base_uri' => $config->coreUrl,
             'handler' => $stack,
             RequestOptions::AUTH => 'oauth',
         ]);
