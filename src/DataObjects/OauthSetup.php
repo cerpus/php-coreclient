@@ -9,5 +9,5 @@ class OauthSetup
 {
     use CreateTrait;
 
-    public $key, $secret, $coreUrl, $authUrl;
+    public $key, $secret, $coreUrl, $authUrl, $tokenSecret, $token;
 }
