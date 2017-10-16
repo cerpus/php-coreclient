@@ -13,6 +13,9 @@ This is a client that handles requests to Core.
         * CERPUS_CORE_SERVER
         * CERPUS_CORE_KEY
         * CERPUS_CORE_SECRET
+        * CERPUS_CORE_TOKEN
+        * CERPUS_CORE_TOKEN_SECRET
+        
     1. Auth
         * CERPUS_AUTH_SERVER
         * CERPUS_AUTH_USER

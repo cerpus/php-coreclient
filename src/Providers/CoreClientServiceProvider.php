@@ -32,6 +32,8 @@ class CoreClientServiceProvider extends ServiceProvider
                 'key' => $coreclient['core']['key'],
                 'secret' => $coreclient['core']['secret'],
                 'authUrl' => $coreclient['auth']['url'],
+                'token' => $coreclient['core']['token'],
+                'token_secret' => $coreclient['core']['token_secret'],
             ]));
             return new $coreclient['adapter']['current']($client);
         });

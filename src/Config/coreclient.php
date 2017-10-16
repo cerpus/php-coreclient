@@ -4,7 +4,9 @@ return [
     "core" => [
         "url" => env("CERPUS_CORE_SERVER"),
         "key" => env("CERPUS_CORE_KEY"),
-        "secret" => env("CERPUS_CORE_SECRET")
+        "secret" => env("CERPUS_CORE_SECRET"),
+        "token" => env("CERPUS_CORE_TOKEN"),
+        "token_secret" => env("CERPUS_CORE_TOKEN_SECRET"),
     ],
 
     "auth" => [
