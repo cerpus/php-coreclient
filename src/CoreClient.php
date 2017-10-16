@@ -16,4 +16,9 @@ class CoreClient extends Facade
     {
         return dirname(__DIR__);
     }
+
+    public static function getConfigPath()
+    {
+        return self::getBasePath() . '/src/Config/coreclient.php';
+    }
 }
