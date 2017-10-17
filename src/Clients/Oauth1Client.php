@@ -11,9 +11,17 @@ use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Subscriber\Oauth\Oauth1;
 use GuzzleHttp\Client;
 
+/**
+ * Class Oauth1Client
+ * @package Cerpus\CoreClient\Clients
+ */
 class Oauth1Client implements CoreClientContract
 {
 
+    /**
+     * @param OauthSetup $config
+     * @return ClientInterface
+     */
     public static function getClient(OauthSetup $config): ClientInterface
     {
         $stack = HandlerStack::create();

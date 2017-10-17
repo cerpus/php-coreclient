@@ -12,8 +12,16 @@ use GuzzleHttp\RequestOptions;
 use kamermans\OAuth2\GrantType\ClientCredentials;
 use kamermans\OAuth2\OAuth2Middleware;
 
+/**
+ * Class Oauth2Client
+ * @package Cerpus\CoreClient\Clients
+ */
 class Oauth2Client implements CoreClientContract
 {
+    /**
+     * @param OauthSetup $config
+     * @return ClientInterface
+     */
     public static function getClient(OauthSetup $config): ClientInterface
     {
         $reauth_client = new Client([

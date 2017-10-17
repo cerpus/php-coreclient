@@ -5,8 +5,16 @@ namespace Cerpus\CoreClient\Traits;
 
 use Illuminate\Support\Collection;
 
+/**
+ * Trait CreateTrait
+ * @package Cerpus\CoreClient\Traits
+ */
 trait CreateTrait
 {
+    /**
+     * @param array|null $attributes
+     * @return CreateTrait
+     */
     public static function create(array $attributes = null)
     {
         $self = new self();
@@ -21,6 +29,9 @@ trait CreateTrait
         return $self;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         $returnArray = [];

@@ -9,18 +9,31 @@ use GuzzleHttp\ClientInterface;
 use Illuminate\Http\Response;
 use Log;
 
+/**
+ * Class CoreAdapter
+ * @package Cerpus\CoreClient\Adapters
+ */
 class CoreAdapter implements CoreContract
 {
     /** @var ClientInterface */
     private $client;
 
+    /** @var \Exception */
     private $error;
 
+    /**
+     * CoreAdapter constructor.
+     * @param ClientInterface $client
+     */
     public function __construct(ClientInterface $client)
     {
         $this->client = $client;
     }
 
+    /**
+     * @param Questionset $questionset
+     * @return bool|QuestionsetResponse
+     */
     public function createQuestionset(Questionset $questionset)
     {
         try {
@@ -50,6 +63,9 @@ class CoreAdapter implements CoreContract
         return false;
     }
 
+    /**
+     * @return null|\Exception
+     */
     public function getError()
     {
         return $this->error;
