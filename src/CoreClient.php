@@ -2,15 +2,41 @@
 
 namespace Cerpus\CoreClient;
 
+use Cerpus\CoreClient\Contracts\CoreContract;
+use Illuminate\Support\Facades\Facade;
 
-use Illuminate\Contracts\Config\Repository;
-
-class CoreClient
+/**
+ * Class CoreClient
+ * @package Cerpus\CoreClient
+ */
+class CoreClient extends Facade
 {
-    private $config;
+    /**
+     * @var string
+     */
+    static $alias = "coreclient";
 
-    public function __construct(Repository $config)
+    /**
+     * @return string
+     */
+    protected static function getFacadeAccessor()
     {
-        $this->config = $config;
+        return CoreContract::class;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getBasePath()
+    {
+        return dirname(__DIR__);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getConfigPath()
+    {
+        return self::getBasePath() . '/src/Config/coreclient.php';
     }
 }

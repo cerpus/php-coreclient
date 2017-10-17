@@ -3,7 +3,10 @@
 namespace Cerpus\CoreClient\Providers;
 
 
+use Cerpus\CoreClient\Clients\Client;
 use Cerpus\CoreClient\Contracts\CoreContract;
+use Cerpus\CoreClient\CoreClient;
+use Cerpus\CoreClient\DataObjects\OauthSetup;
 use Illuminate\Support\ServiceProvider;
 
 class CoreClientServiceProvider extends ServiceProvider
@@ -18,14 +21,24 @@ class CoreClientServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(CoreContract::class, function ($app){
+            $coreclient = $app['config']->get("coreclient");
+            $clientClass = $coreclient['adapter']['client'];
+            if (empty($clientClass)) {
+                $clientClass = Client::class;
+            }
 
-            $adapter = $app['config']->get("adapter");
-            //return new $class($app['config']['groups']);
+            $client = $clientClass::getClient(OauthSetup::create([
+                'coreUrl' => $coreclient['core']['url'],
+                'key' => $coreclient['core']['key'],
+                'secret' => $coreclient['core']['secret'],
+                'authUrl' => $coreclient['auth']['url'],
+                'token' => $coreclient['core']['token'],
+                'token_secret' => $coreclient['core']['token_secret'],
+            ]));
+            return new $coreclient['adapter']['current']($client);
         });
 
-        $this->app->alias(CoreContract::class, 'coreclient');
-
-        $this->mergeConfigFrom(__DIR__ . "/config/coreclient.php",  "coreclient");
+        $this->mergeConfigFrom(CoreClient::getConfigPath(), CoreClient::$alias);
     }
 
     /**
