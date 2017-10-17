@@ -3,6 +3,8 @@
 namespace Cerpus\CoreClient\Traits;
 
 
+use Illuminate\Support\Collection;
+
 trait CreateTrait
 {
     public static function create(array $attributes = null)
@@ -17,5 +19,25 @@ trait CreateTrait
             }
         }
         return $self;
+    }
+
+    public function toArray()
+    {
+        $returnArray = [];
+        $properties = get_object_vars($this);
+        foreach ($properties as $property => $value) {
+            if ($this->$property instanceof Collection) {
+                $returnArray[$property] = $this->$property->map(function ($element) {
+                    if (method_exists($element, "toArray")) {
+                        return $element->toArray();
+                    } else {
+                        return $element;
+                    }
+                })->toArray();
+            } else {
+                $returnArray[$property] = $value;
+            }
+        }
+        return $returnArray;
     }
 }

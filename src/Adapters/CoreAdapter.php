@@ -27,7 +27,7 @@ class CoreAdapter implements CoreContract
     {
         try {
             $response = $this->client->request('POST', '/url/to/core', [
-                'json' => $this->prepareQuestionset($questionset)
+                'json' => $questionset->toArray()
             ]);
 
             if ($response->getStatusCode() !== Response::HTTP_OK) {
@@ -55,35 +55,5 @@ class CoreAdapter implements CoreContract
     public function getError()
     {
         return $this->error;
-    }
-
-    private function prepareQuestionset(Questionset $questionset)
-    {
-        $questions = $questionset->getQuestions()
-            ->map(function ($question) {
-                /** @var Question $question */
-                $answers = $question->getAnswers()
-                    ->map(function ($answer) {
-                        /** @var Answer $answer */
-                        return [
-                            'text' => $answer->text,
-                            'correct' => $answer->correct,
-                        ];
-                    })
-                    ->toArray();
-                return [
-                    'text' => $question->text,
-                    'type' => $question->getType(),
-                    'answers' => $answers
-                ];
-            })
-            ->toArray();
-        return [
-            'license' => $questionset->license,
-            'authId' => $questionset->authId,
-            'title' => $questionset->title,
-            'sharing' => $questionset->getSharing(),
-            'questions' => $questions
-        ];
     }
 }

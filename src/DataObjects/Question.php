@@ -9,7 +9,7 @@ abstract class Question
     public $text;
     protected $type;
 
-    private $answers;
+    protected $answers;
 
     const H5P_MULTICHOICE = "H5P.MultiChoice";
 
