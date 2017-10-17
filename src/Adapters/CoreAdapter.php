@@ -3,8 +3,6 @@
 namespace Cerpus\CoreClient\Adapters;
 
 use Cerpus\CoreClient\Contracts\CoreContract;
-use Cerpus\CoreClient\DataObjects\Answer;
-use Cerpus\CoreClient\DataObjects\Question;
 use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
 use GuzzleHttp\ClientInterface;
@@ -26,7 +24,7 @@ class CoreAdapter implements CoreContract
     public function createQuestionset(Questionset $questionset)
     {
         try {
-            $response = $this->client->request('POST', '/url/to/core', [
+            $response = $this->client->request('POST', 'v1/contenttypes/questionsets', [
                 'json' => $questionset->toArray()
             ]);
 
