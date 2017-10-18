@@ -17,14 +17,12 @@ abstract class Question
     /**
      * @var string
      */
-    protected $type;
+    protected static $type;
 
     /**
      * @var Collection
      */
     protected $answers;
-
-    const H5P_MULTICHOICE = "H5P.MultiChoice";
 
     /**
      * Question constructor.

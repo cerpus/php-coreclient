@@ -3,6 +3,7 @@
 namespace Cerpus\CoreClient\DataObjects;
 
 
+use Cerpus\CoreClient\CoreClient;
 use Cerpus\CoreClient\Traits\CreateTrait;
 
 /**
@@ -16,5 +17,5 @@ class MultiChoiceQuestion extends Question
     /**
      * @var string
      */
-    protected $type = self::H5P_MULTICHOICE;
+    protected static $type = CoreClient::H5P_MULTICHOICE;
 }

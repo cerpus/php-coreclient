@@ -52,8 +52,10 @@ class CoreAdapter implements CoreContract
             $responseContent = json_decode($responseBody);
             /** @var QuestionsetResponse $questionsetResponse */
             $questionsetResponse = QuestionsetResponse::create([
-                'id' => $responseContent->id,
-                'urlToCore' => $responseContent->url
+                'returnType' => $responseContent->returnType,
+                'contentType' => $responseContent->contentType,
+                'urlToCore' => $responseContent->url,
+                'text' => $responseContent->text
             ]);
             return $questionsetResponse;
         } catch (\Exception $exception) {
