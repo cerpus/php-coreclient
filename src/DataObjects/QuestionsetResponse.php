@@ -20,6 +20,16 @@ class QuestionsetResponse
     /**
      * @var string
      */
-    public $id;
+    public $contentType;
+
+    /**
+     * @var string
+     */
+    public $returnType;
+
+    /**
+     * @var string
+     */
+    public $text;
 
 }

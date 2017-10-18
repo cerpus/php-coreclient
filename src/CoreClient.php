@@ -16,6 +16,9 @@ class CoreClient extends Facade
      */
     static $alias = "coreclient";
 
+    const H5P_MULTICHOICE = "H5P.MultiChoice";
+    const H5P_QUESTIONSET = "H5P.QuestionSet";
+
     /**
      * @return string
      */

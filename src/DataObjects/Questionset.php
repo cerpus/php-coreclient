@@ -3,6 +3,7 @@
 namespace Cerpus\CoreClient\DataObjects;
 
 
+use Cerpus\CoreClient\CoreClient;
 use Cerpus\CoreClient\Traits\CreateTrait;
 
 /**
@@ -17,6 +18,8 @@ class Questionset
     /** @var string $licence */
     /** @var string $title */
     public $authId, $license, $title;
+
+    public static $type = CoreClient::H5P_QUESTIONSET;
 
     /** @var \Illuminate\Support\Collection */
     private $questions;

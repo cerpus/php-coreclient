@@ -30,13 +30,15 @@ namespace Tests {
         {
             $faker = Factory::create();
             $url = $faker->url;
-            $id = $faker->randomDigitNotNull;
+            $text = $faker->sentence;
 
             $client = $this->createMock(ClientInterface::class);
-            $client->method("request")->willReturnCallback(function () use ($url, $id) {
+            $client->method("request")->willReturnCallback(function () use ($url, $text) {
                 $response = (new Response(\Illuminate\Http\Response::HTTP_OK, [], json_encode([
-                    'id' => $id,
-                    'url' => $url
+                    'contentType' => Questionset::$type,
+                    'url' => $url,
+                    'returnType' => "lti_launch_url",
+                    'text' => $text,
                 ])));
                 return $response;
             });
@@ -77,7 +79,7 @@ namespace Tests {
             $response = $coreAdapter->createQuestionSet($questionset);
             $this->assertInstanceOf(QuestionsetResponse::class, $response);
 
-            $this->assertEquals($id, $response->id);
+            $this->assertEquals($text, $response->text);
             $this->assertEquals($url, $response->urlToCore);
         }
 
