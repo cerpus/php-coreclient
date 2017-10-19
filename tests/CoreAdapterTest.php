@@ -85,6 +85,8 @@ namespace Tests {
 
         /**
          * @test
+         * @expectedException \Exception
+         * @expectedExceptionMessage Empty response
          */
         public function createQuestionset_emptyResponse_thenFailure()
         {
@@ -99,11 +101,12 @@ namespace Tests {
             $this->assertFalse($response);
             $error = $coreAdapter->getError();
             $this->assertInstanceOf(\Exception::class, $error);
-            $this->assertEquals("Empty response", $error->getMessage());
         }
 
         /**
          * @test
+         * @expectedException \Exception
+         * @expectedExceptionMessage Unexpected response code(401) with reason: Unauthorized
          */
         public function createQuestionset_unautorized_thenFailure()
         {
@@ -118,7 +121,6 @@ namespace Tests {
             $this->assertFalse($response);
             $error = $coreAdapter->getError();
             $this->assertInstanceOf(\Exception::class, $error);
-            $this->assertEquals("Unexpected response code(401) with reason: Unauthorized", $error->getMessage());
         }
     }
 }

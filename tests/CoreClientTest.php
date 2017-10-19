@@ -9,6 +9,8 @@
 namespace Tests;
 
 use Cerpus\CoreClient\CoreClient;
+use Cerpus\CoreClient\DataObjects\Questionset;
+use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
 use PHPUnit\Framework\TestCase;
 
 class CoreClientTest extends TestCase
@@ -28,5 +30,27 @@ class CoreClientTest extends TestCase
     public function getConfigPath()
     {
         $this->assertEquals(dirname(__DIR__) . '/src/Config/coreclient.php', CoreClient::getConfigPath());
+    }
+
+
+    /**
+     * @test
+     */
+    public function createQuestionset_validData_thenSuccess()
+    {
+        $title = "My first questionset";
+
+        CoreClient::shouldReceive('createQuestionset')
+            ->once()
+            ->andReturn(QuestionsetResponse::create([
+                'text' => $title
+            ]));
+
+        $questionset = new Questionset();
+        $questionset->title = $title;
+
+        $response = CoreClient::createQuestionset($questionset);
+        $this->assertInstanceOf(QuestionsetResponse::class, $response);
+        $this->assertEquals($questionset->title, $response->text);
     }
 }
