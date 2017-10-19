@@ -32,37 +32,31 @@ class CoreAdapter implements CoreContract
 
     /**
      * @param Questionset $questionset
-     * @return bool|QuestionsetResponse
+     * @return QuestionsetResponse
      */
     public function createQuestionset(Questionset $questionset)
     {
-        try {
-            $response = $this->client->request('POST', 'v1/contenttypes/questionsets', [
-                'json' => $questionset->toArray()
-            ]);
+        $response = $this->client->request('POST', 'v1/contenttypes/questionsets', [
+            'json' => $questionset->toArray()
+        ]);
 
-            if ($response->getStatusCode() !== Response::HTTP_OK) {
-                throw new \Exception(sprintf("Unexpected response code(%s) with reason: %s", $response->getStatusCode(), $response->getReasonPhrase()));
-            }
-
-            $responseBody = $response->getBody();
-            if (empty($responseBody->getSize())) {
-                throw new \Exception("Empty response");
-            }
-            $responseContent = json_decode($responseBody);
-            /** @var QuestionsetResponse $questionsetResponse */
-            $questionsetResponse = QuestionsetResponse::create([
-                'returnType' => $responseContent->returnType,
-                'contentType' => $responseContent->contentType,
-                'urlToCore' => $responseContent->url,
-                'text' => $responseContent->text
-            ]);
-            return $questionsetResponse;
-        } catch (\Exception $exception) {
-            $this->error = $exception;
-            Log::error(__METHOD__ . ': (' . $exception->getCode() . ') ' . $exception->getMessage());
+        if ($response->getStatusCode() !== Response::HTTP_OK) {
+            throw new \Exception(sprintf("Unexpected response code(%s) with reason: %s", $response->getStatusCode(), $response->getReasonPhrase()));
         }
-        return false;
+
+        $responseBody = $response->getBody();
+        if (empty($responseBody->getSize())) {
+            throw new \Exception("Empty response");
+        }
+        $responseContent = json_decode($responseBody);
+        /** @var QuestionsetResponse $questionsetResponse */
+        $questionsetResponse = QuestionsetResponse::create([
+            'returnType' => $responseContent->returnType,
+            'contentType' => $responseContent->contentType,
+            'urlToCore' => $responseContent->url,
+            'text' => $responseContent->text
+        ]);
+        return $questionsetResponse;
     }
 
     /**
