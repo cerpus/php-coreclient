@@ -4,6 +4,9 @@ namespace Cerpus\CoreClient\Providers;
 
 
 use Cerpus\CoreClient\Clients\Client;
+use Cerpus\CoreClient\Clients\Oauth1Client;
+use Cerpus\CoreClient\Clients\Oauth2Client;
+use Cerpus\CoreClient\Contracts\CoreClientContract;
 use Cerpus\CoreClient\Contracts\CoreContract;
 use Cerpus\CoreClient\CoreClient;
 use Cerpus\CoreClient\DataObjects\OauthSetup;
@@ -20,14 +23,24 @@ class CoreClientServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(CoreContract::class, function ($app){
+
+        $this->app->bind(CoreClientContract::class, function ($app) {
             $coreclient = $app['config']->get("coreclient");
-            $clientClass = $coreclient['adapter']['client'];
-            if (empty($clientClass)) {
-                $clientClass = Client::class;
+            $client = strtolower($coreclient['adapter']['client']);
+            /** @var CoreClientContract $clientClass */
+            switch ($client) {
+                case "oauth1":
+                    $clientClass = Oauth1Client::class;
+                    break;
+                case "oauth2":
+                    $clientClass = Oauth2Client::class;
+                    break;
+                default:
+                    $clientClass = Client::class;
+                    break;
             }
 
-            $client = $clientClass::getClient(OauthSetup::create([
+            return $clientClass::getClient(OauthSetup::create([
                 'coreUrl' => $coreclient['core']['url'],
                 'key' => $coreclient['core']['key'],
                 'secret' => $coreclient['core']['secret'],
@@ -35,6 +48,11 @@ class CoreClientServiceProvider extends ServiceProvider
                 'token' => $coreclient['core']['token'],
                 'token_secret' => $coreclient['core']['token_secret'],
             ]));
+        });
+
+        $this->app->bind(CoreContract::class, function ($app) {
+            $coreclient = $app['config']->get("coreclient");
+            $client = $app->make(CoreClientContract::class);
             return new $coreclient['adapter']['current']($client);
         });
 
