@@ -15,30 +15,6 @@ class QuestionsetTest extends TestCase
     /**
      * @test
      */
-    public function Questionset_create_success()
-    {
-        $faker = Factory::create();
-        $title = $faker->sentence;
-        $license = "BY-SA";
-        $authId = $faker->uuid;
-
-        $questionset = new Questionset();
-        $questionset->title = $title;
-        $questionset->license = $license;
-        $questionset->authId = $authId;
-
-        $createQuestionset = Questionset::create([
-            'license' => $license,
-            'title' => $title,
-            'authId' => $authId
-        ]);
-
-        $this->assertEquals($questionset, $createQuestionset);
-    }
-
-    /**
-     * @test
-     */
     public function Questionset_toArray_success()
     {
         $faker = Factory::create();
