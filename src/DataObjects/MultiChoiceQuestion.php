@@ -17,5 +17,5 @@ class MultiChoiceQuestion extends Question
     /**
      * @var string
      */
-    protected static $type = CoreClient::H5P_MULTICHOICE;
+    protected $type = CoreClient::H5P_MULTICHOICE;
 }

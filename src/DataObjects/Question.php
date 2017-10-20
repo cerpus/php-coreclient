@@ -17,7 +17,7 @@ abstract class Question
     /**
      * @var string
      */
-    protected static $type;
+    protected $type;
 
     /**
      * @var Collection
