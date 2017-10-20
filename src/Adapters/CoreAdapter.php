@@ -40,10 +40,6 @@ class CoreAdapter implements CoreContract
             'json' => $questionset->toArray()
         ]);
 
-        if ($response->getStatusCode() !== Response::HTTP_OK) {
-            throw new \Exception(sprintf("Unexpected response code(%s) with reason: %s", $response->getStatusCode(), $response->getReasonPhrase()));
-        }
-
         $responseBody = $response->getBody();
         if (empty($responseBody->getSize())) {
             throw new \Exception("Empty response");

@@ -100,22 +100,5 @@ namespace Cerpus\CoreClientTests {
             $coreAdapter = new CoreAdapter($client);
             $response = $coreAdapter->createQuestionset(new Questionset());
         }
-
-        /**
-         * @test
-         * @expectedException \Exception
-         * @expectedExceptionMessage Unexpected response code(401) with reason: Unauthorized
-         */
-        public function createQuestionset_unautorized_thenFailure()
-        {
-            $client = $this->createMock(ClientInterface::class);
-            $client->method("request")->willReturnCallback(function () {
-                return (new Response())->withStatus(\Illuminate\Http\Response::HTTP_UNAUTHORIZED);
-            });
-
-            /** @var ClientInterface $client */
-            $coreAdapter = new CoreAdapter($client);
-            $response = $coreAdapter->createQuestionset(new Questionset());
-        }
     }
 }
