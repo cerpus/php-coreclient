@@ -9,9 +9,10 @@ namespace {
     }
 }
 
-namespace Tests {
+namespace Cerpus\CoreClientTests {
 
     use Cerpus\CoreClient\Adapters\CoreAdapter;
+    use Cerpus\CoreClient\CoreClient;
     use Cerpus\CoreClient\DataObjects\Answer;
     use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
     use Cerpus\CoreClient\DataObjects\Questionset;
@@ -35,7 +36,7 @@ namespace Tests {
             $client = $this->createMock(ClientInterface::class);
             $client->method("request")->willReturnCallback(function () use ($url, $text) {
                 $response = (new Response(\Illuminate\Http\Response::HTTP_OK, [], json_encode([
-                    'contentType' => Questionset::$type,
+                    'contentType' => CoreClient::H5P_QUESTIONSET,
                     'url' => $url,
                     'returnType' => "lti_launch_url",
                     'text' => $text,
@@ -98,9 +99,6 @@ namespace Tests {
             /** @var ClientInterface $client */
             $coreAdapter = new CoreAdapter($client);
             $response = $coreAdapter->createQuestionset(new Questionset());
-            $this->assertFalse($response);
-            $error = $coreAdapter->getError();
-            $this->assertInstanceOf(\Exception::class, $error);
         }
 
         /**
@@ -118,9 +116,6 @@ namespace Tests {
             /** @var ClientInterface $client */
             $coreAdapter = new CoreAdapter($client);
             $response = $coreAdapter->createQuestionset(new Questionset());
-            $this->assertFalse($response);
-            $error = $coreAdapter->getError();
-            $this->assertInstanceOf(\Exception::class, $error);
         }
     }
 }

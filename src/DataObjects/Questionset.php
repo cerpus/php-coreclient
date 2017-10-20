@@ -19,7 +19,7 @@ class Questionset
     /** @var string $title */
     public $authId, $license, $title;
 
-    public static $type = CoreClient::H5P_QUESTIONSET;
+    protected $type = CoreClient::H5P_QUESTIONSET;
 
     /** @var \Illuminate\Support\Collection */
     private $questions;

@@ -6,7 +6,7 @@
  * Time: 11:30 AM
  */
 
-namespace Tests;
+namespace Cerpus\CoreClientTests;
 
 use Cerpus\CoreClient\CoreClient;
 use Cerpus\CoreClient\DataObjects\Questionset;
