@@ -12,21 +12,43 @@ use Illuminate\Support\Collection;
 trait CreateTrait
 {
     /**
-     * @param array|null $attributes
+     * @param mixed $attributes
      * @return CreateTrait
      */
-    public static function create(array $attributes = null)
+    public static function create($attributes = null)
     {
         $self = new self();
-        if (is_array($attributes)) {
-            $properties = get_object_vars($self);
-            foreach ($attributes as $attribute => $value) {
-                if (array_key_exists($attribute, $properties)) {
-                    $self->$attribute = $value;
-                }
+        if (is_null($attributes)) {
+            return $self;
+        }
+        $properties = get_object_vars($self);
+        if (!is_array($attributes)) {
+            $arguments = func_get_args();
+            $propertiesKeys = array_keys($properties);
+            $attributes = [];
+            foreach ($arguments as $index => $value) {
+                $property = $propertiesKeys[$index];
+                $attributes[$property] = $value;
+            }
+        }
+        foreach ($attributes as $attribute => $value) {
+            if (!$self->isGuarded($attribute) && array_key_exists($attribute, $properties)) {
+                $self->$attribute = $value;
             }
         }
         return $self;
+    }
+
+    /**
+     * @param string $attribute
+     * @return bool
+     */
+    private function isGuarded($attribute)
+    {
+        if (strtolower($attribute) === 'guarded') {
+            return true;
+        }
+        return !empty($this->guarded) && in_array($attribute, $this->guarded);
     }
 
     /**
@@ -50,5 +72,13 @@ trait CreateTrait
             }
         }
         return $returnArray;
+    }
+
+    /**
+     * @return string
+     */
+    public function toJson()
+    {
+        return json_encode($this);
     }
 }
