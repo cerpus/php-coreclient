@@ -24,4 +24,8 @@ class BehaviorSettingsDataObject extends BaseDataObject
      */
     public $overrideFeedback = false;
 
+    public static $rules = [
+        'enableRetry' => 'boolean|nullable',
+        'overrideFeedback' => 'boolean|nullable',
+    ];
 }
