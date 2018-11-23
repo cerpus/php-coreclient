@@ -5,6 +5,12 @@ namespace Cerpus\CoreClient\DataObjects;
 
 use Cerpus\CoreClient\Traits\CreateTrait;
 
+/**
+ * Class BehaviorSettingsDataObject
+ * @package Cerpus\CoreClient\DataObjects
+ *
+ * @method static BehaviorSettingsDataObject create($attributes = null)
+ */
 class BehaviorSettingsDataObject extends BaseDataObject
 {
 
