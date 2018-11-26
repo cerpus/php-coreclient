@@ -14,29 +14,18 @@ class BahaviorSettingsDataObjectTest extends TestCase
     {
         /** @var BehaviorSettingsDataObject $behaviorSettings */
         $behaviorSettings = BehaviorSettingsDataObject::create();
-        $this->assertTrue($behaviorSettings->enableRetry);
-        $this->assertFalse($behaviorSettings->overrideFeedback);
+        $this->assertNull($behaviorSettings->enableRetry);
 
-        /** @var BehaviorSettingsDataObject $behaviorSettings */
+        $behaviorSettings = BehaviorSettingsDataObject::create(true);
+        $this->assertTrue($behaviorSettings->enableRetry);
+
         $behaviorSettings = BehaviorSettingsDataObject::create(false);
         $this->assertFalse($behaviorSettings->enableRetry);
-        $this->assertFalse($behaviorSettings->overrideFeedback);
 
-        /** @var BehaviorSettingsDataObject $behaviorSettings */
         $behaviorSettings = BehaviorSettingsDataObject::create([
             'enableRetry' => null,
-            'overrideFeedback' => false
         ]);
         $this->assertNull($behaviorSettings->enableRetry);
-        $this->assertFalse($behaviorSettings->overrideFeedback);
-
-        /** @var BehaviorSettingsDataObject $behaviorSettings */
-        $behaviorSettings = BehaviorSettingsDataObject::create([
-            'enableRetry' => false,
-            'overrideFeedback' => true
-        ]);
-        $this->assertFalse($behaviorSettings->enableRetry);
-        $this->assertTrue($behaviorSettings->overrideFeedback);
     }
 
 }
