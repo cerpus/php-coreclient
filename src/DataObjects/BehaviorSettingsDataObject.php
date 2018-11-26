@@ -17,21 +17,16 @@ class BehaviorSettingsDataObject extends BaseDataObject
     use CreateTrait;
 
     /**
-     * @var bool|null
+     * Setting to override the logic to retry a H5P in the learners view.
+     * True = enables retry
+     * False = disables retry
+     * Null = use value set on the resource(default)
      *
-     * Value null lets Edlib determine the behavior
-     */
-    public $enableRetry = true;
-
-    /**
      * @var bool|null
-     *
-     * Value null lets Edlib determine the behavior
      */
-    public $overrideFeedback = false;
+    public $enableRetry;
 
     public static $rules = [
         'enableRetry' => 'boolean|nullable',
-        'overrideFeedback' => 'boolean|nullable',
     ];
 }
