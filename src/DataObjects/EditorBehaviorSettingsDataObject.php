@@ -11,7 +11,7 @@ use Cerpus\CoreClient\Traits\CreateTrait;
  *
  * @method static EditorBehaviorSettingsDataObject create($attributes = null)
  */
-class EditorBehaviorSettingsDataObject extends BaseDataObject
+class EditorBehaviorSettingsDataObject extends BaseDataObject implements \JsonSerializable
 {
 
     use CreateTrait;
@@ -25,7 +25,21 @@ class EditorBehaviorSettingsDataObject extends BaseDataObject
      */
     public $hideTextAndTranslations = true;
 
+    private $behaviorSettings;
+
     public static $rules = [
         'hideTextAndTranslations' => 'boolean',
     ];
+
+    public function setBehaviorSettings(BehaviorSettingsDataObject $settingsDataObject)
+    {
+        $this->behaviorSettings = $settingsDataObject;
+    }
+
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+
+        return $vars;
+    }
 }
