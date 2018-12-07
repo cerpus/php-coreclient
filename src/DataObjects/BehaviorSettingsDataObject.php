@@ -26,7 +26,18 @@ class BehaviorSettingsDataObject extends BaseDataObject
      */
     public $enableRetry;
 
+    /**
+     * Setting to override the logic to enable instant checking of answers in the learners view
+     * True = enables auto checking of answers
+     * False = disables auto checking of answers
+     * Null = use value set on the resource(default)
+
+     * @var bool|null
+     */
+    public $autoCheck;
+
     public static $rules = [
         'enableRetry' => 'boolean|nullable',
+        'autoCheck' => 'boolean|nullable',
     ];
 }
