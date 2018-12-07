@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2890eeb22e882b315ba231e540534071",
-    "content-hash": "0a6c558a0291fc26465629dacae40b69",
+  "hash": "585769c98a804443627bed3d249c5fcf",
+  "content-hash": "3fabfba9af14ccabdda10b6fe4fa7304",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -1427,6 +1427,145 @@
             "time": "2016-01-20 08:20:44"
         },
         {
+          "name": "illuminate/container",
+          "version": "v5.5.44",
+          "source": {
+            "type": "git",
+            "url": "https://github.com/illuminate/container.git",
+            "reference": "7917f4c86ecf7f4d0efcfd83248ad3e301e08858"
+          },
+          "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/illuminate/container/zipball/7917f4c86ecf7f4d0efcfd83248ad3e301e08858",
+            "reference": "7917f4c86ecf7f4d0efcfd83248ad3e301e08858",
+            "shasum": ""
+          },
+          "require": {
+            "illuminate/contracts": "5.5.*",
+            "php": ">=7.0",
+            "psr/container": "~1.0"
+          },
+          "type": "library",
+          "extra": {
+            "branch-alias": {
+              "dev-master": "5.5-dev"
+            }
+          },
+          "autoload": {
+            "psr-4": {
+              "Illuminate\\Container\\": ""
+            }
+          },
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Taylor Otwell",
+              "email": "taylor@laravel.com"
+            }
+          ],
+          "description": "The Illuminate Container package.",
+          "homepage": "https://laravel.com",
+          "time": "2018-01-19 17:58:33"
+        },
+      {
+        "name": "illuminate/translation",
+        "version": "v5.5.44",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/illuminate/translation.git",
+          "reference": "587734f44981cae0a7d98c89bfead040059b1636"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/illuminate/translation/zipball/587734f44981cae0a7d98c89bfead040059b1636",
+          "reference": "587734f44981cae0a7d98c89bfead040059b1636",
+          "shasum": ""
+        },
+        "require": {
+          "illuminate/contracts": "5.5.*",
+          "illuminate/filesystem": "5.5.*",
+          "illuminate/support": "5.5.*",
+          "php": ">=7.0"
+        },
+        "type": "library",
+        "extra": {
+          "branch-alias": {
+            "dev-master": "5.5-dev"
+          }
+        },
+        "autoload": {
+          "psr-4": {
+            "Illuminate\\Translation\\": ""
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Taylor Otwell",
+            "email": "taylor@laravel.com"
+          }
+        ],
+        "description": "The Illuminate Translation package.",
+        "homepage": "https://laravel.com",
+        "time": "2017-11-22 19:01:14"
+      },
+      {
+        "name": "illuminate/validation",
+        "version": "v5.5.44",
+        "source": {
+          "type": "git",
+          "url": "https://github.com/illuminate/validation.git",
+          "reference": "6590d61858f78c301bced7308593abfcd1c7e527"
+        },
+        "dist": {
+          "type": "zip",
+          "url": "https://api.github.com/repos/illuminate/validation/zipball/6590d61858f78c301bced7308593abfcd1c7e527",
+          "reference": "6590d61858f78c301bced7308593abfcd1c7e527",
+          "shasum": ""
+        },
+        "require": {
+          "illuminate/container": "5.5.*",
+          "illuminate/contracts": "5.5.*",
+          "illuminate/support": "5.5.*",
+          "illuminate/translation": "5.5.*",
+          "php": ">=7.0",
+          "symfony/http-foundation": "~3.3"
+        },
+        "suggest": {
+          "illuminate/database": "Required to use the database presence verifier (5.5.*)."
+        },
+        "type": "library",
+        "extra": {
+          "branch-alias": {
+            "dev-master": "5.5-dev"
+          }
+        },
+        "autoload": {
+          "psr-4": {
+            "Illuminate\\Validation\\": ""
+          }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+          "MIT"
+        ],
+        "authors": [
+          {
+            "name": "Taylor Otwell",
+            "email": "taylor@laravel.com"
+          }
+        ],
+        "description": "The Illuminate Validation package.",
+        "homepage": "https://laravel.com",
+        "time": "2018-10-01 13:28:19"
+      },
+      {
             "name": "mockery/mockery",
             "version": "1.0",
             "source": {

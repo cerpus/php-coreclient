@@ -36,8 +36,26 @@ class BehaviorSettingsDataObject extends BaseDataObject
      */
     public $autoCheck;
 
+    /**
+     * Setting to preset a mode for behavior settings.
+     *
+     * Supported modes are 'exam' and 'score'
+     *
+     * Mode 'exam' equals {
+     *      enableRetry: false,
+     *      autoCheck: false
+     * }
+     *
+     * Mode 'score' equals {
+     *      enableRetry: true,
+     *      autoCheck: false
+     * }
+     */
+    public $presetmode;
+
     public static $rules = [
         'enableRetry' => 'boolean|nullable',
         'autoCheck' => 'boolean|nullable',
+        'presetmode' => ['regex:/^(exam|score)$/', 'nullable'],
     ];
 }

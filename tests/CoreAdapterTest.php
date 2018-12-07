@@ -14,12 +14,16 @@ namespace Cerpus\CoreClientTests {
     use Cerpus\CoreClient\Adapters\CoreAdapter;
     use Cerpus\CoreClient\CoreClient;
     use Cerpus\CoreClient\DataObjects\Answer;
+    use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
     use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
     use Cerpus\CoreClient\DataObjects\Questionset;
     use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
     use Faker\Factory;
     use GuzzleHttp\ClientInterface;
     use GuzzleHttp\Psr7\Response;
+    use Illuminate\Translation\ArrayLoader;
+    use Illuminate\Translation\Translator;
+    use Illuminate\Validation\Validator;
     use PHPUnit\Framework\TestCase;
 
     class CoreAdapterTest extends TestCase
@@ -98,7 +102,44 @@ namespace Cerpus\CoreClientTests {
 
             /** @var ClientInterface $client */
             $coreAdapter = new CoreAdapter($client);
-            $response = $coreAdapter->createQuestionset(new Questionset());
+            $coreAdapter->createQuestionset(new Questionset());
+        }
+
+        /**
+         * @test
+         */
+        public function validateBehaviorRequest()
+        {
+            $behaviorSettings = BehaviorSettingsDataObject::create();
+            $behaviorSettings->enableRetry = "yes";
+
+            $trans = new Translator(new ArrayLoader(), "en");
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertFalse($validator->passes());
+            $this->assertCount(1, $validator->getMessageBag());
+
+            $behaviorSettings->presetmode = "vocal";
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertFalse($validator->passes());
+            $this->assertCount(2, $validator->getMessageBag());
+
+            $behaviorSettings->enableRetry = true;
+            $behaviorSettings->presetmode = "vocal";
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertFalse($validator->passes());
+            $this->assertCount(1, $validator->getMessageBag());
+
+            $behaviorSettings->presetmode = "";
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertTrue($validator->passes());
+
+            $behaviorSettings->presetmode = 'score';
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertTrue($validator->passes());
+
+            $behaviorSettings->presetmode = 'exam';
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertTrue($validator->passes());
         }
     }
 }
