@@ -16,28 +16,40 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $behaviorSettings = BehaviorSettingsDataObject::create();
         $this->assertNull($behaviorSettings->enableRetry);
         $this->assertNull($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(true);
         $this->assertTrue($behaviorSettings->enableRetry);
         $this->assertNull($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(true, true);
         $this->assertTrue($behaviorSettings->enableRetry);
         $this->assertTrue($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(false);
         $this->assertFalse($behaviorSettings->enableRetry);
         $this->assertNull($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(false, false);
         $this->assertFalse($behaviorSettings->enableRetry);
         $this->assertFalse($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create([
             'enableRetry' => null,
         ]);
         $this->assertNull($behaviorSettings->enableRetry);
         $this->assertNull($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create([
             'enableRetry' => null,
@@ -45,13 +57,19 @@ class BahaviorSettingsDataObjectTest extends TestCase
         ]);
         $this->assertNull($behaviorSettings->enableRetry);
         $this->assertNull($behaviorSettings->autoCheck);
+        $this->assertNull($behaviorSettings->presetmode);
+        $this->assertNull($behaviorSettings->showSolution);
 
         $behaviorSettings = BehaviorSettingsDataObject::create([
             'enableRetry' => true,
             'autoCheck' => true,
+            'showSolution' => true,
+            'presetmode' => 'score',
         ]);
         $this->assertTrue($behaviorSettings->enableRetry);
         $this->assertTrue($behaviorSettings->autoCheck);
+        $this->assertEquals('score', $behaviorSettings->presetmode);
+        $this->assertTrue($behaviorSettings->showSolution);
     }
 
 }

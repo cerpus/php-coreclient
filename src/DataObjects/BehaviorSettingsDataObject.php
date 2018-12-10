@@ -53,9 +53,19 @@ class BehaviorSettingsDataObject extends BaseDataObject
      */
     public $presetmode;
 
+    /**
+     * Setting to override the logic to enable or disable showint the solution in the learners view
+     * True = enables showing of solution
+     * False = disables showing of solution
+     * Null = use value set on the resource(default)
+     * @var bool|null
+     */
+    public $showSolution;
+
     public static $rules = [
         'enableRetry' => 'boolean|nullable',
         'autoCheck' => 'boolean|nullable',
         'presetmode' => ['regex:/^(exam|score)$/', 'nullable'],
+        'showSolution' => 'boolean|nullable',
     ];
 }
