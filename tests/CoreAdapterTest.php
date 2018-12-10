@@ -140,6 +140,15 @@ namespace Cerpus\CoreClientTests {
             $behaviorSettings->presetmode = 'exam';
             $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
             $this->assertTrue($validator->passes());
+
+            $behaviorSettings->showSolution = 'on';
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertFalse($validator->passes());
+            $this->assertCount(1, $validator->getMessageBag());
+
+            $behaviorSettings->showSolution = false;
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertTrue($validator->passes());
         }
     }
 }
