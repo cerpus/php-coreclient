@@ -111,8 +111,12 @@ namespace Cerpus\CoreClientTests {
         public function validateBehaviorRequest()
         {
             $behaviorSettings = BehaviorSettingsDataObject::create();
-            $behaviorSettings->enableRetry = "yes";
 
+            $trans = new Translator(new ArrayLoader(), "en");
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertTrue($validator->passes());
+
+            $behaviorSettings->enableRetry = "yes";
             $trans = new Translator(new ArrayLoader(), "en");
             $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
             $this->assertFalse($validator->passes());
@@ -147,6 +151,15 @@ namespace Cerpus\CoreClientTests {
             $this->assertCount(1, $validator->getMessageBag());
 
             $behaviorSettings->showSolution = false;
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertTrue($validator->passes());
+
+            $behaviorSettings->includeAnswers = 'on';
+            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+            $this->assertFalse($validator->passes());
+            $this->assertCount(1, $validator->getMessageBag());
+
+            $behaviorSettings->includeAnswers = false;
             $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
             $this->assertTrue($validator->passes());
         }
