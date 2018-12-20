@@ -62,10 +62,19 @@ class BehaviorSettingsDataObject extends BaseDataObject
      */
     public $showSolution;
 
+    /**
+     * Setting to skip including the previous answers when loading a resource
+     * True = include answers
+     * False = exclude answers
+     * @var bool
+     */
+    public $includeAnswers = true;
+
     public static $rules = [
         'enableRetry' => 'boolean|nullable',
         'autoCheck' => 'boolean|nullable',
         'presetmode' => ['regex:/^(exam|score)$/', 'nullable'],
         'showSolution' => 'boolean|nullable',
+        'includeAnswers' => 'boolean|nullable',
     ];
 }
