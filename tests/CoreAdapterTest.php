@@ -79,6 +79,9 @@ namespace Cerpus\CoreClientTests {
                 'authId' => $faker->uuid,
                 'license' => "BY"
             ]);
+
+            $this->assertEquals(0, $questionset->getScore());
+
             $questionset->addQuestion($question);
 
             $response = $coreAdapter->createQuestionSet($questionset);
@@ -86,6 +89,7 @@ namespace Cerpus\CoreClientTests {
 
             $this->assertEquals($text, $response->text);
             $this->assertEquals($url, $response->urlToCore);
+            $this->assertEquals(2, $questionset->getScore());
         }
 
         /**

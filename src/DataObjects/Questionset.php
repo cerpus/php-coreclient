@@ -9,6 +9,8 @@ use Cerpus\CoreClient\Traits\CreateTrait;
 /**
  * Class Questionset
  * @package Cerpus\CoreClient\DataObjects
+ *
+ * @method static Questionset create($attributes = null)
  */
 class Questionset
 {
@@ -26,6 +28,9 @@ class Questionset
     /** @var bool */
     private $sharing = false;
 
+    /** @var int */
+    private $score = 0;
+
     /**
      * Questionset constructor.
      */
@@ -40,6 +45,7 @@ class Questionset
     public function addQuestion(MultiChoiceQuestion $question)
     {
         $this->questions->push($question);
+        $this->updateScore($question);
     }
 
     /**
@@ -64,5 +70,19 @@ class Questionset
     public function getSharing()
     {
         return $this->sharing;
+    }
+
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    private function updateScore(MultiChoiceQuestion $question)
+    {
+        $this->score += $question->getAnswers()
+            ->filter(function ($answer) {
+                return $answer->correct;
+            })
+            ->count();
     }
 }
