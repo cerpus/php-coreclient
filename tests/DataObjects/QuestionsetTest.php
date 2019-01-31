@@ -27,6 +27,8 @@ class QuestionsetTest extends TestCase
         $questionset->license = $license;
         $questionset->authId = $authId;
 
+        $this->assertEquals(0, $questionset->getScore());
+
         $questionText1 = $faker->sentence;
         $answerText1 = $faker->sentence;
         $answerText2 = $faker->sentence;
@@ -58,6 +60,7 @@ class QuestionsetTest extends TestCase
             'authId' => $authId,
             'license' => $license,
             'title' => $title,
+            'score' => 1,
             'type' => CoreClient::H5P_QUESTIONSET,
             'questions' => [
                 [
@@ -87,6 +90,46 @@ class QuestionsetTest extends TestCase
         $questionset->setSharing(true);
         $toArray['sharing'] = true;
         $this->assertEquals($toArray, $questionset->toArray());
+        $this->assertEquals(1, $questionset->getScore());
+
+        $newQuestion = MultiChoiceQuestion::create([
+            'text' => $faker->sentence,
+        ]);
+
+        $newAnswers = collect([
+            Answer::create([
+                'text' => $faker->sentence,
+                'correct' => true,
+            ]),
+            Answer::create([
+                'text' => $faker->sentence,
+                'correct' => true,
+            ]),
+            Answer::create([
+                'text' => $faker->sentence,
+                'correct' => true,
+            ])
+        ]);
+
+        $newQuestion->addAnswers($newAnswers);
+        $questionset->addQuestion($newQuestion);
+
+        $this->assertEquals(4, $questionset->getScore());
     }
 
+    /**
+     * @test
+     */
+    public function createQuestionsetViaCreateMethod()
+    {
+        $faker = Factory::create();
+        $authid = $faker->uuid;
+        $license = "BY";
+        $title = $faker->sentence;
+
+        $questionset = Questionset::create($authid, $license, $title);
+        $this->assertEquals($authid, $questionset->authId);
+        $this->assertEquals($license, $questionset->license);
+        $this->assertEquals($title, $questionset->title);
+    }
 }
