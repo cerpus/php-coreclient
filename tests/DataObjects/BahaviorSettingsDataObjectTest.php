@@ -18,6 +18,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertNull($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(true);
@@ -25,6 +26,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertNull($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(true, true);
@@ -32,6 +34,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertTrue($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(false);
@@ -39,6 +42,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertNull($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create(false, false);
@@ -46,6 +50,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertFalse($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create([
@@ -55,6 +60,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertNull($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create([
@@ -65,6 +71,7 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertNull($behaviorSettings->autoCheck);
         $this->assertNull($behaviorSettings->presetmode);
         $this->assertNull($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
         $this->assertTrue($behaviorSettings->includeAnswers);
 
         $behaviorSettings = BehaviorSettingsDataObject::create([
@@ -78,6 +85,22 @@ class BahaviorSettingsDataObjectTest extends TestCase
         $this->assertTrue($behaviorSettings->autoCheck);
         $this->assertEquals('score', $behaviorSettings->presetmode);
         $this->assertTrue($behaviorSettings->showSolution);
+        $this->assertNull($behaviorSettings->showSummary);
+        $this->assertFalse($behaviorSettings->includeAnswers);
+
+        $behaviorSettings = BehaviorSettingsDataObject::create([
+            'enableRetry' => true,
+            'autoCheck' => true,
+            'showSolution' => true,
+            'presetmode' => 'score',
+            'includeAnswers' => false,
+            'showSummary' => true,
+        ]);
+        $this->assertTrue($behaviorSettings->enableRetry);
+        $this->assertTrue($behaviorSettings->autoCheck);
+        $this->assertEquals('score', $behaviorSettings->presetmode);
+        $this->assertTrue($behaviorSettings->showSolution);
+        $this->assertTrue($behaviorSettings->showSummary);
         $this->assertFalse($behaviorSettings->includeAnswers);
     }
 
