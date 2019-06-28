@@ -70,11 +70,19 @@ class BehaviorSettingsDataObject extends BaseDataObject
      */
     public $includeAnswers = true;
 
+    /**
+     * Setting to be able to override the setting of hide/show the summary
+     * True = summary is shown
+     * False = summari is suppressed
+     */
+    public $showSummary;
+
     public static $rules = [
         'enableRetry' => 'boolean|nullable',
         'autoCheck' => 'boolean|nullable',
         'presetmode' => ['regex:/^(exam|score)$/', 'nullable'],
         'showSolution' => 'boolean|nullable',
         'includeAnswers' => 'boolean|nullable',
+        'showSummary' => 'boolean|nullable',
     ];
 }
