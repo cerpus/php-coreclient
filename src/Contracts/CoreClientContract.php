@@ -2,6 +2,7 @@
 
 namespace Cerpus\CoreClient\Contracts;
 
+use Cerpus\Helper\Contracts\HelperClientContract;
 use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\ClientInterface;
 
@@ -9,11 +10,6 @@ use GuzzleHttp\ClientInterface;
  * Interface CoreClientContract
  * @package Cerpus\CoreClient\Contracts
  */
-interface CoreClientContract
+interface CoreClientContract extends HelperClientContract
 {
-    /**
-     * @param OauthSetup $config
-     * @return ClientInterface
-     */
-    public static function getClient(OauthSetup $config): ClientInterface;
 }
