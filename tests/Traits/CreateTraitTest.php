@@ -2,7 +2,7 @@
 
 namespace Cerpus\CoreClientTests\Traits;
 
-use Cerpus\CoreClient\Traits\CreateTrait;
+use Cerpus\Helper\Traits\CreateTrait;
 use Faker\Factory;
 use PHPUnit\Framework\TestCase;
 
@@ -78,6 +78,7 @@ class CreateTraitTest extends TestCase
         $truck = new Truck();
         $truck->color = $color;
         $truck->maxWeight = $maxWeight;
+        $truck->setIsDirty(true);
 
         $truck2 = Truck::create([
             'color' => $color,

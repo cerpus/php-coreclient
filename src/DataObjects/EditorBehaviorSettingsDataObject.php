@@ -2,8 +2,8 @@
 
 namespace Cerpus\CoreClient\DataObjects;
 
-
-use Cerpus\CoreClient\Traits\CreateTrait;
+use JsonSerializable;
+use Cerpus\Helper\Traits\CreateTrait;
 
 /**
  * Class EditorBehaviorSettingsDataObject
@@ -11,7 +11,7 @@ use Cerpus\CoreClient\Traits\CreateTrait;
  *
  * @method static EditorBehaviorSettingsDataObject create($attributes = null)
  */
-class EditorBehaviorSettingsDataObject extends BaseDataObject implements \JsonSerializable
+class EditorBehaviorSettingsDataObject extends BaseDataObject implements JsonSerializable
 {
 
     use CreateTrait;

@@ -2,7 +2,7 @@
 
 namespace Cerpus\CoreClient\Contracts;
 
-use Cerpus\CoreClient\DataObjects\OauthSetup;
+use Cerpus\Helper\DataObjects\OauthSetup;
 use GuzzleHttp\ClientInterface;
 
 /**

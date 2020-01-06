@@ -3,13 +3,13 @@
 namespace Cerpus\CoreClient\Providers;
 
 
-use Cerpus\CoreClient\Clients\Client;
-use Cerpus\CoreClient\Clients\Oauth1Client;
-use Cerpus\CoreClient\Clients\Oauth2Client;
+use Cerpus\Helper\Clients\Client;
+use Cerpus\Helper\Clients\Oauth1Client;
+use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\CoreClient\Contracts\CoreClientContract;
 use Cerpus\CoreClient\Contracts\CoreContract;
 use Cerpus\CoreClient\CoreClient;
-use Cerpus\CoreClient\DataObjects\OauthSetup;
+use Cerpus\Helper\DataObjects\OauthSetup;
 use Illuminate\Support\ServiceProvider;
 
 class CoreClientServiceProvider extends ServiceProvider
