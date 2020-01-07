@@ -3,8 +3,6 @@
 namespace Cerpus\CoreClient\Contracts;
 
 use Cerpus\Helper\Contracts\HelperClientContract;
-use Cerpus\Helper\DataObjects\OauthSetup;
-use GuzzleHttp\ClientInterface;
 
 /**
  * Interface CoreClientContract
