@@ -1,22 +1,21 @@
 {
   "name": "cerpus/coreclient",
   "description": "Client for communication with Core",
-  "keyword": [
+  "keywords": [
     "Cerpus Core API Client",
     "laravel",
     "lumen"
   ],
   "require": {
-    "guzzlehttp/guzzle": "^6.2",
-    "illuminate/http": ">=5.2",
-    "kamermans/guzzle-oauth2-subscriber": "^1.0",
-    "guzzlehttp/oauth-subscriber": "^0.3.0"
+    "illuminate/http": "^6.0",
+    "cerpus/cerpushelper": "^1.1",
+    "ext-json": "^1.6"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.4",
-    "fzaninotto/faker": "^1.7",
+    "fzaninotto/faker": "^1.9",
     "mockery/mockery": "^1.0",
-    "illuminate/validation": "^5.4"
+    "illuminate/validation": "^6.0"
   },
   "authors": [
     {
@@ -33,5 +32,15 @@
     "psr-4": {
       "Cerpus\\CoreClientTests\\": "tests"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://composer.cerpus.net/"
+    },
+    {
+      "type": "composer",
+      "url": "https://composer-3rdparty.cerpus.net/"
+    }
+  ]
 }

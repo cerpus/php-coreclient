@@ -4,7 +4,7 @@ namespace Cerpus\CoreClient\DataObjects;
 
 
 use Cerpus\CoreClient\CoreClient;
-use Cerpus\CoreClient\Traits\CreateTrait;
+use Cerpus\Helper\Traits\CreateTrait;
 
 /**
  * Class Questionset
