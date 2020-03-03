@@ -5,9 +5,11 @@ namespace Cerpus\CoreClient\Adapters;
 use Cerpus\CoreClient\Contracts\CoreContract;
 use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
+use Cerpus\CoreClient\Exception\CoreClientException;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Response;
-use Log;
+use function GuzzleHttp\json_decode as guzzle_json_decode;
 
 /**
  * Class CoreAdapter
@@ -17,9 +19,6 @@ class CoreAdapter implements CoreContract
 {
     /** @var ClientInterface */
     private $client;
-
-    /** @var \Exception */
-    private $error;
 
     /**
      * CoreAdapter constructor.
@@ -33,33 +32,26 @@ class CoreAdapter implements CoreContract
     /**
      * @param Questionset $questionset
      * @return QuestionsetResponse
+     * @throws CoreClientException
      */
     public function createQuestionset(Questionset $questionset)
     {
-        $response = $this->client->request('POST', 'v1/contenttypes/questionsets', [
-            'json' => $questionset->toArray()
-        ]);
+        try {
+            $response = $this->client->request('POST', 'v1/contenttypes/questionsets', [
+                'json' => $questionset->toArray()
+            ]);
 
-        $responseBody = $response->getBody();
-        if (empty($responseBody->getSize())) {
-            throw new \Exception("Empty response");
+            $responseContent = guzzle_json_decode($response->getBody()->getContents());
+            /** @var QuestionsetResponse $questionsetResponse */
+            $questionsetResponse = QuestionsetResponse::create([
+                'returnType' => $responseContent->returnType,
+                'contentType' => $responseContent->contentType,
+                'urlToCore' => $responseContent->url,
+                'text' => $responseContent->text
+            ]);
+            return $questionsetResponse;
+        } catch (GuzzleException $e) {
+            throw CoreClientException::fromGuzzleException($e);
         }
-        $responseContent = json_decode($responseBody);
-        /** @var QuestionsetResponse $questionsetResponse */
-        $questionsetResponse = QuestionsetResponse::create([
-            'returnType' => $responseContent->returnType,
-            'contentType' => $responseContent->contentType,
-            'urlToCore' => $responseContent->url,
-            'text' => $responseContent->text
-        ]);
-        return $questionsetResponse;
-    }
-
-    /**
-     * @return null|\Exception
-     */
-    public function getError()
-    {
-        return $this->error;
     }
 }
