@@ -54,4 +54,17 @@ class CoreAdapter implements CoreContract
             throw CoreClientException::fromGuzzleException($e);
         }
     }
+
+    public function publishResource(string $id): void
+    {
+        if (!preg_match('/^[0-9a-f]{8}(?:-?[0-9a-f]{4}){3}-?[0-9a-f]{12}$/i', $id)) {
+            throw new \InvalidArgumentException('Parameter 1 must be a valid UUID');
+        }
+
+        try {
+            $this->client->request('PUT', sprintf('v1/ltilinks/%s/publish', $id));
+        } catch (GuzzleException $e) {
+            throw CoreClientException::fromGuzzleException($e);
+        }
+    }
 }

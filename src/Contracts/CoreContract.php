@@ -19,4 +19,6 @@ interface CoreContract
      * @throws CoreClientException
      */
     public function createQuestionSet(Questionset $questionset);
+
+    public function publishResource(string $id): void;
 }

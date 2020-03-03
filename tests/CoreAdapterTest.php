@@ -9,9 +9,14 @@ use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
 use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
 use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
+use Cerpus\CoreClient\Exception\HttpException;
 use Cerpus\CoreClient\Exception\MalformedResponseException;
 use Faker\Factory;
+use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Translation\ArrayLoader;
 use Illuminate\Translation\Translator;
@@ -158,5 +163,55 @@ class CoreAdapterTest extends TestCase
         $behaviorSettings->includeAnswers = false;
         $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
         $this->assertTrue($validator->passes());
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function publishResource_validUuid_thenSuccess(): void
+    {
+        $mock = new MockHandler([
+            new Response(\Illuminate\Http\Response::HTTP_NO_CONTENT, [], ''),
+        ]);
+
+        $adapter = new CoreAdapter(new Client(['handler' => $mock]));
+        $adapter->publishResource('07B53719-9560-46DF-AE08-52374BFC3A8E');
+    }
+
+    /**
+     * @test
+     */
+    public function publishResource_badResponse_thenFailure(): void
+    {
+        $mock = new MockHandler([
+            new RequestException(
+                'Not found',
+                new Request('PUT', 'v1/ltilinks/07B53719-9560-46DF-AE08-52374BFC3A8E/publish'),
+                new Response(\Illuminate\Http\Response::HTTP_NOT_FOUND, [], 'Not found'),
+            ),
+        ]);
+
+        $adapter = new CoreAdapter(new Client(['handler' => $mock]));
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode(\Illuminate\Http\Response::HTTP_NOT_FOUND);
+
+        $adapter->publishResource('07B53719-9560-46DF-AE08-52374BFC3A8E');
+    }
+
+    /**
+     * @test
+     */
+    public function publishResource_badUuid_thenFailure(): void
+    {
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject */
+        $client = $this->createMock(ClientInterface::class);
+        $adapter = new CoreAdapter($client);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter 1 must be a valid UUID');
+
+        $adapter->publishResource('jafashfjkahsfjkah');
     }
 }
