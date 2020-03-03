@@ -188,7 +188,7 @@ class CoreAdapterTest extends TestCase
             new RequestException(
                 'Not found',
                 new Request('PUT', 'v1/ltilinks/07B53719-9560-46DF-AE08-52374BFC3A8E/publish'),
-                new Response(\Illuminate\Http\Response::HTTP_NOT_FOUND, [], 'Not found'),
+                new Response(\Illuminate\Http\Response::HTTP_NOT_FOUND, [], 'Not found')
             ),
         ]);
 
