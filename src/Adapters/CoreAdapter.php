@@ -9,6 +9,7 @@ use Cerpus\CoreClient\Exception\CoreClientException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use function GuzzleHttp\json_decode as guzzle_json_decode;
 
 /**
@@ -57,7 +58,7 @@ class CoreAdapter implements CoreContract
 
     public function publishResource(string $id): void
     {
-        if (!preg_match('/^[0-9a-f]{8}(?:-?[0-9a-f]{4}){3}-?[0-9a-f]{12}$/i', $id)) {
+        if (!Str::isUuid($id)) {
             throw new \InvalidArgumentException('Parameter 1 must be a valid UUID');
         }
 

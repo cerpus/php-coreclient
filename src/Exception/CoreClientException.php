@@ -4,7 +4,6 @@ namespace Cerpus\CoreClient\Exception;
 
 use GuzzleHttp\Exception\InvalidArgumentException as GuzzleInvalidArgumentException;
 use GuzzleHttp\Exception\TransferException;
-use InvalidArgumentException;
 
 class CoreClientException extends \Exception
 {
