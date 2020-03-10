@@ -1,171 +1,217 @@
 <?php
 
-namespace {
-    class Log
+namespace Cerpus\CoreClientTests;
+
+use Cerpus\CoreClient\Adapters\CoreAdapter;
+use Cerpus\CoreClient\CoreClient;
+use Cerpus\CoreClient\DataObjects\Answer;
+use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
+use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
+use Cerpus\CoreClient\DataObjects\Questionset;
+use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
+use Cerpus\CoreClient\Exception\HttpException;
+use Cerpus\CoreClient\Exception\MalformedResponseException;
+use Faker\Factory;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Translation\ArrayLoader;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\Validator;
+use PHPUnit\Framework\TestCase;
+
+class CoreAdapterTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function createQuestionset_validData_thenSuccess()
     {
-        public function error()
-        {
-        }
+        $faker = Factory::create();
+        $url = $faker->url;
+        $text = $faker->sentence;
+
+        $client = $this->createMock(ClientInterface::class);
+        $client->method("request")->willReturnCallback(function () use ($url, $text) {
+            $response = (new Response(\Illuminate\Http\Response::HTTP_OK, [], json_encode([
+                'contentType' => CoreClient::H5P_QUESTIONSET,
+                'url' => $url,
+                'returnType' => "lti_launch_url",
+                'text' => $text,
+            ])));
+            return $response;
+        });
+
+        /** @var ClientInterface $client */
+        $coreAdapter = new CoreAdapter($client);
+        $this->assertInstanceOf(CoreAdapter::class, $coreAdapter);
+
+        /** @var MultiChoiceQuestion $question */
+        $question = MultiChoiceQuestion::create([
+            'text' => $faker->sentence
+        ]);
+
+        $answers = collect([
+            Answer::create([
+                'text' => $faker->sentence,
+                'correct' => true
+            ]),
+            Answer::create([
+                'text' => $faker->sentence,
+                'correct' => false
+            ]),
+            Answer::create([
+                'text' => $faker->sentence,
+                'correct' => true
+            ]),
+        ]);
+        $question->addAnswers($answers);
+
+        /** @var Questionset $questionset */
+        $questionset = Questionset::create([
+            'title' => $faker->sentence,
+            'authId' => $faker->uuid,
+            'license' => "BY"
+        ]);
+
+        $this->assertEquals(0, $questionset->getScore());
+
+        $questionset->addQuestion($question);
+
+        $response = $coreAdapter->createQuestionSet($questionset);
+        $this->assertInstanceOf(QuestionsetResponse::class, $response);
+
+        $this->assertEquals($text, $response->text);
+        $this->assertEquals($url, $response->urlToCore);
+        $this->assertEquals(2, $questionset->getScore());
     }
-}
 
-namespace Cerpus\CoreClientTests {
-
-    use Cerpus\CoreClient\Adapters\CoreAdapter;
-    use Cerpus\CoreClient\CoreClient;
-    use Cerpus\CoreClient\DataObjects\Answer;
-    use Cerpus\CoreClient\DataObjects\BehaviorSettingsDataObject;
-    use Cerpus\CoreClient\DataObjects\MultiChoiceQuestion;
-    use Cerpus\CoreClient\DataObjects\Questionset;
-    use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
-    use Faker\Factory;
-    use GuzzleHttp\ClientInterface;
-    use GuzzleHttp\Psr7\Response;
-    use Illuminate\Translation\ArrayLoader;
-    use Illuminate\Translation\Translator;
-    use Illuminate\Validation\Validator;
-    use PHPUnit\Framework\TestCase;
-
-    class CoreAdapterTest extends TestCase
+    /**
+     * @test
+     */
+    public function createQuestionset_emptyResponse_thenFailure()
     {
-        /**
-         * @test
-         */
-        public function createQuestionset_validData_thenSuccess()
-        {
-            $faker = Factory::create();
-            $url = $faker->url;
-            $text = $faker->sentence;
+        $this->expectException(MalformedResponseException::class);
 
-            $client = $this->createMock(ClientInterface::class);
-            $client->method("request")->willReturnCallback(function () use ($url, $text) {
-                $response = (new Response(\Illuminate\Http\Response::HTTP_OK, [], json_encode([
-                    'contentType' => CoreClient::H5P_QUESTIONSET,
-                    'url' => $url,
-                    'returnType' => "lti_launch_url",
-                    'text' => $text,
-                ])));
-                return $response;
-            });
+        $client = $this->createMock(ClientInterface::class);
+        $client->method("request")->willReturnCallback(function () {
+            return (new Response())->withStatus(\Illuminate\Http\Response::HTTP_OK);
+        });
 
-            /** @var ClientInterface $client */
-            $coreAdapter = new CoreAdapter($client);
-            $this->assertInstanceOf(CoreAdapter::class, $coreAdapter);
+        /** @var ClientInterface $client */
+        $coreAdapter = new CoreAdapter($client);
+        $coreAdapter->createQuestionset(new Questionset());
+    }
 
-            /** @var MultiChoiceQuestion $question */
-            $question = MultiChoiceQuestion::create([
-                'text' => $faker->sentence
-            ]);
+    /**
+     * @test
+     */
+    public function validateBehaviorRequest()
+    {
+        $behaviorSettings = BehaviorSettingsDataObject::create();
 
-            $answers = collect([
-                Answer::create([
-                    'text' => $faker->sentence,
-                    'correct' => true
-                ]),
-                Answer::create([
-                    'text' => $faker->sentence,
-                    'correct' => false
-                ]),
-                Answer::create([
-                    'text' => $faker->sentence,
-                    'correct' => true
-                ]),
-            ]);
-            $question->addAnswers($answers);
+        $trans = new Translator(new ArrayLoader(), "en");
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertTrue($validator->passes());
 
-            /** @var Questionset $questionset */
-            $questionset = Questionset::create([
-                'title' => $faker->sentence,
-                'authId' => $faker->uuid,
-                'license' => "BY"
-            ]);
+        $behaviorSettings->enableRetry = "yes";
+        $trans = new Translator(new ArrayLoader(), "en");
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertFalse($validator->passes());
+        $this->assertCount(1, $validator->getMessageBag());
 
-            $this->assertEquals(0, $questionset->getScore());
+        $behaviorSettings->presetmode = "vocal";
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertFalse($validator->passes());
+        $this->assertCount(2, $validator->getMessageBag());
 
-            $questionset->addQuestion($question);
+        $behaviorSettings->enableRetry = true;
+        $behaviorSettings->presetmode = "vocal";
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertFalse($validator->passes());
+        $this->assertCount(1, $validator->getMessageBag());
 
-            $response = $coreAdapter->createQuestionSet($questionset);
-            $this->assertInstanceOf(QuestionsetResponse::class, $response);
+        $behaviorSettings->presetmode = "";
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertTrue($validator->passes());
 
-            $this->assertEquals($text, $response->text);
-            $this->assertEquals($url, $response->urlToCore);
-            $this->assertEquals(2, $questionset->getScore());
-        }
+        $behaviorSettings->presetmode = 'score';
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertTrue($validator->passes());
 
-        /**
-         * @test
-         * @expectedException \Exception
-         * @expectedExceptionMessage Empty response
-         */
-        public function createQuestionset_emptyResponse_thenFailure()
-        {
-            $client = $this->createMock(ClientInterface::class);
-            $client->method("request")->willReturnCallback(function () {
-                return (new Response())->withStatus(\Illuminate\Http\Response::HTTP_OK);
-            });
+        $behaviorSettings->presetmode = 'exam';
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertTrue($validator->passes());
 
-            /** @var ClientInterface $client */
-            $coreAdapter = new CoreAdapter($client);
-            $coreAdapter->createQuestionset(new Questionset());
-        }
+        $behaviorSettings->showSolution = 'on';
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertFalse($validator->passes());
+        $this->assertCount(1, $validator->getMessageBag());
 
-        /**
-         * @test
-         */
-        public function validateBehaviorRequest()
-        {
-            $behaviorSettings = BehaviorSettingsDataObject::create();
+        $behaviorSettings->showSolution = false;
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertTrue($validator->passes());
 
-            $trans = new Translator(new ArrayLoader(), "en");
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertTrue($validator->passes());
+        $behaviorSettings->includeAnswers = 'on';
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertFalse($validator->passes());
+        $this->assertCount(1, $validator->getMessageBag());
 
-            $behaviorSettings->enableRetry = "yes";
-            $trans = new Translator(new ArrayLoader(), "en");
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertFalse($validator->passes());
-            $this->assertCount(1, $validator->getMessageBag());
+        $behaviorSettings->includeAnswers = false;
+        $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
+        $this->assertTrue($validator->passes());
+    }
 
-            $behaviorSettings->presetmode = "vocal";
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertFalse($validator->passes());
-            $this->assertCount(2, $validator->getMessageBag());
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function publishResource_validUuid_thenSuccess(): void
+    {
+        $mock = new MockHandler([
+            new Response(\Illuminate\Http\Response::HTTP_NO_CONTENT, [], ''),
+        ]);
 
-            $behaviorSettings->enableRetry = true;
-            $behaviorSettings->presetmode = "vocal";
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertFalse($validator->passes());
-            $this->assertCount(1, $validator->getMessageBag());
+        $adapter = new CoreAdapter(new Client(['handler' => $mock]));
+        $adapter->publishResource('07B53719-9560-46DF-AE08-52374BFC3A8E');
+    }
 
-            $behaviorSettings->presetmode = "";
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertTrue($validator->passes());
+    /**
+     * @test
+     */
+    public function publishResource_badResponse_thenFailure(): void
+    {
+        $mock = new MockHandler([
+            new RequestException(
+                'Not found',
+                new Request('PUT', 'v1/ltilinks/07B53719-9560-46DF-AE08-52374BFC3A8E/publish'),
+                new Response(\Illuminate\Http\Response::HTTP_NOT_FOUND, [], 'Not found')
+            ),
+        ]);
 
-            $behaviorSettings->presetmode = 'score';
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertTrue($validator->passes());
+        $adapter = new CoreAdapter(new Client(['handler' => $mock]));
 
-            $behaviorSettings->presetmode = 'exam';
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertTrue($validator->passes());
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode(\Illuminate\Http\Response::HTTP_NOT_FOUND);
 
-            $behaviorSettings->showSolution = 'on';
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertFalse($validator->passes());
-            $this->assertCount(1, $validator->getMessageBag());
+        $adapter->publishResource('07B53719-9560-46DF-AE08-52374BFC3A8E');
+    }
 
-            $behaviorSettings->showSolution = false;
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertTrue($validator->passes());
+    /**
+     * @test
+     */
+    public function publishResource_badUuid_thenFailure(): void
+    {
+        /** @var ClientInterface|\PHPUnit\Framework\MockObject\MockObject */
+        $client = $this->createMock(ClientInterface::class);
+        $adapter = new CoreAdapter($client);
 
-            $behaviorSettings->includeAnswers = 'on';
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertFalse($validator->passes());
-            $this->assertCount(1, $validator->getMessageBag());
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter 1 must be a valid UUID');
 
-            $behaviorSettings->includeAnswers = false;
-            $validator = new Validator($trans, $behaviorSettings->toArray(), $behaviorSettings::$rules);
-            $this->assertTrue($validator->passes());
-        }
+        $adapter->publishResource('jafashfjkahsfjkah');
     }
 }
