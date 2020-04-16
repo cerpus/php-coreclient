@@ -214,4 +214,25 @@ class CoreAdapterTest extends TestCase
 
         $adapter->publishResource('jafashfjkahsfjkah');
     }
+
+    /**
+     * @test
+     */
+    public function publishResource_unauthorizedResponse_thenFailure(): void
+    {
+        $mock = new MockHandler([
+            new RequestException(
+                'Not found',
+                new Request('PUT', 'v1/ltilinks/07B53719-9560-46DF-AE08-52374BFC3A8E/publish'),
+                new Response(\Illuminate\Http\Response::HTTP_UNAUTHORIZED, [], 'Unauthorized')
+            ),
+        ]);
+
+        $adapter = new CoreAdapter(new Client(['handler' => $mock]));
+
+        $this->expectException(HttpException::class);
+        $this->expectExceptionCode(\Illuminate\Http\Response::HTTP_UNAUTHORIZED);
+
+        $adapter->publishResource('07B53719-9560-46DF-AE08-52374BFC3A8E');
+    }
 }

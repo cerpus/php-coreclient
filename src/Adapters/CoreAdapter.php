@@ -6,10 +6,13 @@ use Cerpus\CoreClient\Contracts\CoreContract;
 use Cerpus\CoreClient\DataObjects\Questionset;
 use Cerpus\CoreClient\DataObjects\QuestionsetResponse;
 use Cerpus\CoreClient\Exception\CoreClientException;
+use Cerpus\CoreClient\Exception\HttpException;
+use Cerpus\CoreClient\Exception\MalformedResponseException;
+use Cerpus\Helper\Exceptions\InvalidJWTException;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Throwable;
 use function GuzzleHttp\json_decode as guzzle_json_decode;
 
 /**
@@ -32,8 +35,10 @@ class CoreAdapter implements CoreContract
 
     /**
      * @param Questionset $questionset
-     * @return QuestionsetResponse
-     * @throws CoreClientException
+     * @return bool|QuestionsetResponse
+     * @throws HttpException
+     * @throws MalformedResponseException
+     * @throws Throwable
      */
     public function createQuestionset(Questionset $questionset)
     {
@@ -56,6 +61,12 @@ class CoreAdapter implements CoreContract
         }
     }
 
+    /**
+     * @param string $id
+     * @throws HttpException
+     * @throws MalformedResponseException
+     * @throws Throwable
+     */
     public function publishResource(string $id): void
     {
         if (!Str::isUuid($id)) {
@@ -64,7 +75,7 @@ class CoreAdapter implements CoreContract
 
         try {
             $this->client->request('PUT', sprintf('v1/ltilinks/%s/publish', $id));
-        } catch (GuzzleException $e) {
+        } catch (GuzzleException | InvalidJWTException $e) {
             throw CoreClientException::fromGuzzleException($e);
         }
     }
