@@ -17,6 +17,6 @@ return [
 
     "adapter" => [
         'current' => env("CORECLIENT_ADAPTER", \Cerpus\CoreClient\Adapters\CoreAdapter::class),
-        'client' => env("CORECLIENT_SERVICE", \Cerpus\CoreClient\Clients\Client::class),
+        'client' => env("CORECLIENT_SERVICE", \Cerpus\Helper\Clients\Client::class),
     ]
 ];

@@ -4,6 +4,7 @@ namespace Cerpus\CoreClient\Providers;
 
 
 use Cerpus\Helper\Clients\Client;
+use Cerpus\Helper\Clients\JWT;
 use Cerpus\Helper\Clients\Oauth1Client;
 use Cerpus\Helper\Clients\Oauth2Client;
 use Cerpus\CoreClient\Contracts\CoreClientContract;
@@ -24,16 +25,22 @@ class CoreClientServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->app->bind(CoreClientContract::class, function ($app) {
+        $this->app->bind(CoreClientContract::class, function ($app, $params) {
             $coreclient = $app['config']->get("coreclient");
-            $client = strtolower($coreclient['adapter']['client']);
+            $client = $params['authClient'] ?? strtolower($coreclient['adapter']['client']);
             /** @var CoreClientContract $clientClass */
             switch ($client) {
                 case "oauth1":
+                case Oauth1Client::class:
                     $clientClass = Oauth1Client::class;
                     break;
                 case "oauth2":
+                case Oauth2Client::class:
                     $clientClass = Oauth2Client::class;
+                    break;
+                case "jwt":
+                case JWT::class:
+                    $clientClass = JWT::class;
                     break;
                 default:
                     $clientClass = Client::class;
@@ -44,15 +51,17 @@ class CoreClientServiceProvider extends ServiceProvider
                 'coreUrl' => $coreclient['core']['url'],
                 'key' => $coreclient['core']['key'],
                 'secret' => $coreclient['core']['secret'],
+                'authUser' => $coreclient['auth']['user'],
+                'authSecret' => $coreclient['auth']['secret'],
                 'authUrl' => $coreclient['auth']['url'],
                 'token' => $coreclient['core']['token'],
                 'tokenSecret' => $coreclient['core']['token_secret'],
             ]));
         });
 
-        $this->app->bind(CoreContract::class, function ($app) {
+        $this->app->bind(CoreContract::class, function ($app, $params) {
             $coreclient = $app['config']->get("coreclient");
-            $client = $app->make(CoreClientContract::class);
+            $client = $params['authentication'] ?? $app->make(CoreClientContract::class, $params);
             return new $coreclient['adapter']['current']($client);
         });
 
@@ -66,7 +75,10 @@ class CoreClientServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [CoreContract::class];
+        return [
+            CoreContract::class,
+            CoreClientContract::class
+        ];
     }
 
 }
