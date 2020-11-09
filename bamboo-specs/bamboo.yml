@@ -5,34 +5,42 @@ plan:
   key: BB4CC
   name: BB4B CoreClient
 stages:
-  - Build:
-    - Create package and run tests
+  - Test:
+      - Build Docker image and test
+  - Package:
+      - Create Composer package
 
-Create package and run tests:
+Build Docker image and test:
   tasks:
     - script: |
-        rm -rf code &&
-        mkdir -p code &&
-        (mv * .* code/ || true) &&
+        #!/bin/bash
 
-        cd code &&
-        rm -rf .git &&
-        tar czvf ../coreclient.tar.gz ./ &&
-        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
-        php composer-setup.php &&
-        php -r "unlink('composer-setup.php');" &&
-        php composer.phar install &&
+        set -eux
 
-        vendor/bin/phpunit -c phpunit.xml --log-junit test-report.xml
+        dockertag="coreclient-test:${bamboo.planKey}-${bamboo.buildNumber}"
+        docker build --tag "$dockertag" .
+
+        rm -rf test-results || true
+        mkdir -p test-results
+        docker run --rm --name "phpunit-${bamboo.planKey}-${bamboo.buildNumber}" --volume "$PWD/test-results:/test-results" $dockertag
+  final-tasks:
+    - test-parser:
+        type: junit
+        test-results: test-results/test-report.xml
+    - script: |
+        rm -r test-results
+  requirements:
+    - Docker
+
+Create Composer package:
+  tasks:
+    - script:
+        - apk add git
+        - git archive --format=tgz "${bamboo.planRepository.revision}" > coreclient.tar.gz
   artifacts:
     - name: coreclient.tar.gz
       location: ./
       pattern: coreclient.tar.gz
       required: true
       shared: true
-  final-tasks:
-    - test-parser:
-        type: junit
-        test-results: code/test-report.xml
-  requirements:
-    - platform: ubuntu1804
+  docker: alpine
