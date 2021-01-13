@@ -31,6 +31,9 @@ class Questionset
     /** @var int */
     private $score = 0;
 
+    /** @var bool */
+    public $published = true;
+
     /**
      * Questionset constructor.
      */

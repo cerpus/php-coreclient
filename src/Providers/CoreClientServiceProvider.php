@@ -18,6 +18,18 @@ class CoreClientServiceProvider extends ServiceProvider
     protected $defer = true;
 
     /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->publishes([
+            CoreClient::getConfigPath() => config_path('coreclient.php'),
+        ]);
+    }
+
+    /**
      * Register the service provider.
      *
      * @return void

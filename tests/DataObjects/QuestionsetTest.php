@@ -83,6 +83,7 @@ class QuestionsetTest extends TestCase
                 ]
             ],
             'sharing' => false,
+            'published' => true,
         ];
 
         $this->assertEquals($toArray, $questionset->toArray());
@@ -131,5 +132,27 @@ class QuestionsetTest extends TestCase
         $this->assertEquals($authid, $questionset->authId);
         $this->assertEquals($license, $questionset->license);
         $this->assertEquals($title, $questionset->title);
+    }
+
+    /**
+     * @test
+     */
+    public function createQuestionsetViaCreateMethodWithArrayInput()
+    {
+        $faker = Factory::create();
+        $authid = $faker->uuid;
+        $license = "BY";
+        $title = $faker->sentence;
+        $published = false;
+
+        $questionset = Questionset::create([
+            'authId' => $authid,
+            'license' => $license,
+            'title' => $title,
+            'published' => $published]);
+        $this->assertEquals($authid, $questionset->authId);
+        $this->assertEquals($license, $questionset->license);
+        $this->assertEquals($title, $questionset->title);
+        $this->assertEquals($published, $questionset->published);
     }
 }

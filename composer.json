@@ -1,6 +1,7 @@
 {
   "name": "cerpus/coreclient",
   "description": "Client for communication with Core",
+  "type": "library",
   "keywords": [
     "Cerpus Core API Client",
     "laravel",
@@ -43,5 +44,15 @@
       "type": "composer",
       "url": "https://composer-3rdparty.cerpus.net/"
     }
-  ]
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Cerpus\\CoreClient\\Providers\\CoreClientServiceProvider"
+      ],
+      "aliases": {
+        "CoreClient": "Cerpus\\CoreClient\\CoreClient"
+      }
+    }
+  }
 }
