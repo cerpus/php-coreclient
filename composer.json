@@ -1,6 +1,7 @@
 {
   "name": "cerpus/coreclient",
   "description": "Client for communication with Core",
+  "license": "GPL-3.0",
   "type": "library",
   "keywords": [
     "Cerpus Core API Client",
@@ -35,16 +36,6 @@
       "Cerpus\\CoreClientTests\\": "tests"
     }
   },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https://composer.cerpus.net/"
-    },
-    {
-      "type": "composer",
-      "url": "https://composer-3rdparty.cerpus.net/"
-    }
-  ],
   "extra": {
     "laravel": {
       "providers": [
