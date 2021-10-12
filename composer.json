@@ -1,7 +1,7 @@
 {
   "name": "cerpus/coreclient",
   "description": "Client for communication with Core",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-only",
   "type": "library",
   "keywords": [
     "Cerpus Core API Client",
