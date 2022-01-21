@@ -14,7 +14,7 @@
     "php": "^7.4 || ^8.0",
     "ext-json": "*",
     "illuminate/http": "*",
-    "cerpus/cerpushelper": "^2.0"
+    "cerpus/cerpushelper": "^1.0|^2.0"
   },
   "require-dev": {
     "mockery/mockery": "^1.0",
